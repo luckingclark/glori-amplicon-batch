@@ -1,8 +1,8 @@
 # GLORI Amplicon Batch
 
-A command-line workflow for researchers analyzing targeted GLORI amplicon sequencing on a Slurm cluster. Provide a sample sheet, one FASTQ read end per sample, and the corresponding original amplicon references. The workflow runs trimming, QC and GLORI analysis, then combines per-sample QC, A-site methylation estimates and significant calls into tables and an offline report.
+Analyze targeted GLORI amplicon sequencing from one or more samples on a Slurm CPU cluster. Starting with your FASTQ files and original amplicon sequences, this workflow prepares references, trims reads, runs QC and GLORI analysis, and produces **per-site m6A percentage estimates, significant-site tables and an offline QC report**.
 
-This is an implemented, independent adaptation of GLORI-tools, not an official GLORI release. Its scope is single-end amplicon analysis; it does not perform paired-end mapping, molecular-UMI extraction, deduplication or primer trimming.
+For your first analysis, follow the one-sample workflow below. You only need to provide your inputs and a CPU partition; `run_batch.py` coordinates the analysis steps. This workflow uses one read end per sample and assumes no molecular UMIs. It does not perform paired-end mapping, UMI extraction, deduplication or primer trimming.
 
 | Guide | English | Chinese version |
 |---|---|---|
@@ -123,11 +123,15 @@ Treat `NA` as missing, not 0% methylation. A numeric ratio does not by itself in
 
 The batch uses Illumina adapter trimming, Q20 and minimum length 25; unique Bowtie mapping with at most 2 mismatches; pileup depth capped at 10,000; and A-cutoff 3. Complete calling thresholds and column definitions are in the [results guide](docs/usage.en.md#7-read-the-results). Unsupported reverse alignments cause a failure. Raising CPU requests does not parallelize the first A-to-G conversion step.
 
-## More samples, retries and checks
+## Run more samples or recover a failed run
 
 Use the same entry point with your completed multi-sample sheet. Failed samples do not stop other samples. Once all recorded jobs have ended, `--retry-failed` creates new attempts for unsuccessful samples and skips validated successes; keep the original inputs unchanged. `--summarize` only regenerates reports. See [retry instructions](docs/usage.en.md#8-retry-failures-or-regenerate-the-report). Retries retain the original software snapshot; use a new batch after changing analysis code or inputs.
 
-For developers, the regression and real-tool integration checks can be run on Linux in the complete environment:
+The [full guide](docs/usage.en.md) explains resource changes, retained intermediate files and report regeneration. The [Chinese version](docs/usage.zh-CN.md) covers the same commands.
+
+## Validation
+
+To check the software on Linux with the complete environment installed:
 
 ```bash
 RUN_GLORI_INTEGRATION=1 python -m unittest discover -s tests -v
@@ -135,26 +139,20 @@ RUN_GLORI_INTEGRATION=1 python -m unittest discover -s tests -v
 
 [Linux validation of commit `b2140b0`](https://github.com/luckingclark/glori-amplicon-batch/actions/runs/35960259874) passed **22 tests with no skips**, including real trimming, FastQC, Bowtie, samtools and GLORI analysis, and a comparison of batch-worker output with a direct core run. The tests generate small inputs in temporary directories. Slurm submission is tested with a mocked scheduler; this does not establish compatibility with every cluster or biological accuracy. The [workflow configuration](.github/workflows/checks.yml) records how those checks run.
 
-For a reproducible software problem, use the repository's [issue tracker](https://github.com/luckingclark/glori-amplicon-batch/issues) with versions and a minimal error description. Remove private paths, sample identifiers and sequencing data from reports.
+## Author, licensing and citation
 
-## Citation and provenance
+This adaptation and its documentation were developed by **PKU-Gaolab, Ming-Ao Lu**. Source code is available in this [repository](https://github.com/luckingclark/glori-amplicon-batch). Report reproducible software problems through the [issue tracker](https://github.com/luckingclark/glori-amplicon-batch/issues), including versions and a minimal error description while removing private paths, sample identifiers and sequencing data.
 
-Use [CITATION.cff](CITATION.cff) to cite this adaptation, and record the repository URL and the commit actually used. Cite the original methods and software below as applicable; using this program does not establish which wet-lab method generated the data.
+- **Original additions, modifications and documentation:** covered by the [root MIT license](LICENSE), whose scope does not replace upstream copyright.
+- **Code derived from GLORI-tools:** retains the complete [GLORI-tools MIT notice](LICENSES/GLORI-tools-MIT.txt).
+- **Upstream RNA-m5C code:** retains the complete [RNA-m5C MIT notice](LICENSES/RNA-m5C-MIT.txt), as described in the [third-party notices](THIRD_PARTY_NOTICES.md).
+
+Preserve applicable upstream notices when redistributing the code. Separately installed dependencies retain their own licenses. [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) documents the adapted code, its sources and the scope of local changes. This is an independent, unofficial adaptation of GLORI-tools; it does not imply collaboration with or endorsement by upstream authors. Paper materials and the separately licensed Zenodo companion scripts are not bundled.
+
+Use [CITATION.cff](CITATION.cff) to cite this software, recording the repository URL and the commit actually used. Cite the original methods and software below as applicable, along with relevant analysis dependencies. Using this program does not establish which wet-lab method generated the data.
 
 1. Liu, C., Sun, H., Yi, Y., et al. (2023). **Absolute quantification of single-base m6A methylation in the mammalian transcriptome using GLORI.** *Nature Biotechnology*, 41, 355–366. https://doi.org/10.1038/s41587-022-01487-9 . First published online in 2022; the volume year is 2023.
 2. Sun, H., Lu, B., Zhang, Z., et al. (2025). **Mild and ultrafast GLORI enables absolute quantification of m6A methylome from low-input samples.** *Nature Methods*, 22, 1226–1236. https://doi.org/10.1038/s41592-025-02680-9 . Cite this when the GLORI 3.0 experimental method is used; software use alone does not establish which wet-lab method generated a dataset.
 3. Lu, B. (2024). **Codes for “Mild and ultrafast GLORI enables absolute quantification of m6A methylome from low-input samples”.** Zenodo. https://doi.org/10.5281/zenodo.14233421 . This is a separate collection of companion analysis scripts, not a release of this amplicon adaptation.
 4. **GLORI-tools**, by Cong Liu and contributors. https://github.com/liucongcas/GLORI-tools . Its upstream software citation points to https://doi.org/10.5281/zenodo.7014168 . This repository is not asserted to be an exact copy of that archived version.
 5. **RNA-m5C**, SYSU-zhanglab and Jianheng Liu. https://github.com/SYSU-zhanglab/RNA-m5C . This is an upstream code source acknowledged by GLORI-tools.
-
-Code sources and local changes are described in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). Cite analysis dependencies as appropriate for your work.
-
-## License
-
-Original additions, modifications and documentation are covered by the [root MIT license](LICENSE), whose scope does not replace upstream copyright. Derived code retains the complete [GLORI-tools MIT notice](LICENSES/GLORI-tools-MIT.txt) and [RNA-m5C MIT notice](LICENSES/RNA-m5C-MIT.txt). Keep applicable upstream notices when redistributing the code; separately installed dependencies retain their own licenses.
-
-This independent adaptation does not imply upstream collaboration or endorsement. Paper materials and the separately licensed Zenodo companion scripts are not bundled.
-
-## Author
-
-**PKU-Gaolab, Ming-Ao Lu** — authors of this adaptation and its documentation.

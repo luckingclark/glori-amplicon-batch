@@ -22,4 +22,4 @@ The historical upstream commit of the supplied local copy is unknown; no exact r
 
 ## Referenced methods and materials
 
-The [GLORI 3.0 companion code](https://doi.org/10.5281/zenodo.14233421) is separately licensed under CC BY 4.0 and was consulted as a method/workflow reference. Its files are not bundled or relabeled MIT. Paper PDFs, figures and study data are not distributed. Full method and software references are in [README.md](README.md#citation-and-provenance).
+The [GLORI 3.0 companion code](https://doi.org/10.5281/zenodo.14233421) is separately licensed under CC BY 4.0 and was consulted as a method/workflow reference. Its files are not bundled or relabeled MIT. Paper PDFs, figures and study data are not distributed. Full method and software references are in [README.md](README.md#author-licensing-and-citation).
