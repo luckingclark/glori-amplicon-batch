@@ -12,7 +12,7 @@ import sys
 import uuid
 
 from batch_common import (ANALYSIS, BLAS_ENV, DEFAULTS, VERSION, BatchLock, load_samples,
-                          now, read_json, write_json, limit_math_threads)
+                          now, read_json, write_json, limit_math_threads, validate_trim_paths)
 from batch_report import collect, read_table, SITE_FIELDS, FDR_FIELDS
 
 ROOT = Path(__file__).resolve().parent
@@ -132,6 +132,7 @@ def resource_options(args, previous=None):
 def submit(args):
     from batch_worker import dependencies
     samples = load_samples(args.samples)
+    validate_trim_paths(samples, args.out)
     if args.validate_inputs:
         print(f'输入检查通过：{len(samples)} 个样品。仅检查路径、参考和 FASTQ 首条记录；未提交作业。')
         return 0

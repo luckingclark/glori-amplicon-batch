@@ -24,6 +24,17 @@ def limit_math_threads():
     os.environ.update(BLAS_ENV)
 
 
+def validate_trim_paths(samples, output=None):
+    """Trim Galore 0.6.10 rejects whitespace in FASTQ paths; fail before submission."""
+    paths = [sample['fastq'] for sample in samples]
+    if output is not None:
+        paths.append(str(Path(output).resolve()))
+    for path in paths:
+        if any(character.isspace() for character in str(path)):
+            raise ValueError('Trim Galore requires FASTQ and output paths without whitespace: '
+                             + str(path))
+
+
 def now():
     return datetime.now(timezone.utc).isoformat(timespec='seconds')
 

@@ -22,6 +22,8 @@ ls
 
 The code, inputs and output directory must be on storage accessible to both login and compute nodes. Do not use a login-node-only temporary directory.
 
+FASTQ and output paths must contain no whitespace, including spaces in parent-directory names, because Trim Galore 0.6.10 does not support them. Input and submission checks reject these paths early.
+
 ## 2. Create your Conda environment
 
 If `conda` is not found, first load your cluster's Conda module or follow its administrator's Conda setup instructions. Then create the environment in your own account:

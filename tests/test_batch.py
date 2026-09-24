@@ -183,6 +183,26 @@ class CountTests(unittest.TestCase):
 
 
 class SchedulerTests(unittest.TestCase):
+    def test_whitespace_paths_fail_before_dependency_check_or_submission(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            sheet, _ = fixture(root)
+            args = self.arguments(root, sheet)
+            args.out = str(root / 'results with spaces')
+            with patch.object(worker, 'dependencies') as dependencies, \
+                    patch.object(batch, 'scheduler') as scheduler:
+                with self.assertRaisesRegex(ValueError, 'without whitespace'):
+                    batch.submit(args)
+                args.out = str(root / 'results')
+                moved = root / 'reads with spaces.fq.gz'
+                (root / 'S1.fq.gz').rename(moved)
+                sheet.write_text('sample\tfastq\treference\nS1\treads with spaces.fq.gz\tS1.fa\n')
+                with self.assertRaisesRegex(ValueError, 'without whitespace'):
+                    batch.submit(args)
+                dependencies.assert_not_called()
+                scheduler.assert_not_called()
+                self.assertFalse(Path(args.out).exists())
+
     def test_new_batch_requires_explicit_cpu_partition(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
@@ -203,7 +223,7 @@ class SchedulerTests(unittest.TestCase):
             time=None, partition='test_cpu', account=None, keep_all=None)
 
     def test_resources_dependency_retry_and_output_safety(self):
-        with tempfile.TemporaryDirectory(prefix='batch spaces ') as temp:
+        with tempfile.TemporaryDirectory(prefix='batch_') as temp:
             root = Path(temp)
             sheet, sample = fixture(root)
             _, sample2 = fixture(root, name='S2')
@@ -392,7 +412,7 @@ class LinuxIntegrationTests(unittest.TestCase):
     def test_worker_and_direct_core_match(self):
         """Real Trim Galore/FastQC/Bowtie/samtools/GLORI on synthetic reads; no Slurm."""
         worker.dependencies()
-        with tempfile.TemporaryDirectory(prefix='glori full ') as temp:
+        with tempfile.TemporaryDirectory(prefix='glori_full_') as temp:
             root = Path(temp)
             rng = random.Random(724)
             sequence = ''.join(rng.choice('ACGT') for _ in range(80))

@@ -7,6 +7,7 @@ Prepare your own data; this repository contains no experimental or downloadable 
 ## FASTQ: one file per sample
 
 - Already demultiplexed, standard four-line FASTQ with Phred+33 qualities; `.fq`, `.fastq`, `.fq.gz` or `.fastq.gz`.
+- The full FASTQ path and chosen results path must not contain spaces, tabs or other whitespace: Trim Galore 0.6.10 does not support them. The runner rejects these paths before dependency checks and job submission.
 - Use one read end, normally R1, consistently with the reference orientation. Do not combine R1 and R2 into the input. Supply the original reads; the workflow performs Illumina adapter and quality trimming.
 - Sequences may contain A/C/G/T/N and must match quality-string lengths. Read identifiers must be unique within a sample for reliable restoration of the original A bases.
 - This workflow assumes no molecular UMIs. i5/i7 sample indexes are not molecular UMIs; there is no UMI extraction or deduplication step.

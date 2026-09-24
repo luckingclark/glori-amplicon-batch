@@ -11,7 +11,8 @@ import time
 import traceback
 import zipfile
 
-from batch_common import fingerprint, fastq_stats, now, read_json, write_json, limit_math_threads
+from batch_common import (fingerprint, fastq_stats, now, read_json, write_json,
+                          limit_math_threads, validate_trim_paths)
 from batch_report import export_sites
 
 TOOLS = {'bowtie': ['--version'], 'bowtie-build': ['--version'], 'samtools': ['--version'],
@@ -127,6 +128,7 @@ def work(round_path, index):
         old_handlers[sig] = signal.signal(sig, stopped)
     save()
     try:
+        validate_trim_paths([sample], attempt)
         write_json(attempt / 'versions.json', dependencies())
         if fingerprint(sample['fastq']) != sample['fastq_fingerprint']:
             raise ValueError('FASTQ 大小或修改时间与提交时不同，请用新批次重新提交。')
