@@ -29,7 +29,7 @@ FASTQ and output paths, including parent directories, must contain **no whitespa
 
 ### 1. Get the code and create the environment
 
-Download this repository with **Code → Download ZIP**, extract it, and transfer the complete code directory plus your FASTQ and FASTA to shared cluster storage. Access to this private repository requires authorization. Keep `core/`, `LICENSES/` and the root files together.
+Download this repository with **Code → Download ZIP**, extract it, and transfer the complete code directory plus your FASTQ and FASTA to shared cluster storage. Keep `core/`, `LICENSES/` and the root files together.
 
 Run these commands in a Bash terminal. At each prompt, enter the actual path without surrounding quotes; the commands quote it where needed. Continue in the same terminal for the following steps.
 
