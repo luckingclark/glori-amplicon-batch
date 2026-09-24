@@ -1,6 +1,6 @@
 # Input requirements
 
-[Home](../README.md) · [User guide](usage.en.md) · [简体中文](inputs.zh-CN.md)
+[Home](../README.md) · [User guide](usage.en.md) · [Chinese version](inputs.zh-CN.md)
 
 Prepare your own data; this repository contains no experimental or downloadable synthetic input datasets.
 

@@ -1,6 +1,6 @@
 # Installation and batch analysis
 
-[Home](../README.md) · [简体中文](usage.zh-CN.md) · [Input requirements](inputs.en.md)
+[Home](../README.md) · [Chinese version](usage.zh-CN.md) · [Input requirements](inputs.en.md)
 
 This guide starts from a new cluster account with Conda available. All commands run in a Linux Bash terminal. Copy only the commands inside code blocks; do not copy terminal prompts. Replace every `/path/to/your/...` and `YOUR_CPU_PARTITION` placeholder with your own value before running it.
 
