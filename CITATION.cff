@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: "If you use this amplicon adaptation, cite it and the original methods and software listed in README.md. Record the commit or release used."
+type: software
+title: "GLORI Amplicon Batch: an unofficial GLORI-tools amplicon adaptation"
+authors:
+  - name: "PKU-Gaolab"
+  - family-names: "Lu"
+    given-names: "Ming-Ao"
+license: MIT
+repository-code: "https://github.com/luckingclark/glori-amplicon-batch"
+abstract: "An unofficial single-end amplicon adaptation of GLORI-tools, with automated Slurm batches, QC aggregation, A-site quantification and bilingual documentation."

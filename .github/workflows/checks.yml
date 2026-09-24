@@ -1,0 +1,50 @@
+name: Linux checks
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    defaults:
+      run:
+        shell: bash -el {0}
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      NUMEXPR_NUM_THREADS: '1'
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: conda-incubator/setup-miniconda@v4
+        with:
+          miniforge-version: latest
+          activate-environment: glori_amplicon
+          environment-file: environment.yml
+          channel-priority: strict
+          auto-activate: false
+      - name: Check dependencies
+        run: |
+          python -c "import pysam, Bio, numpy, pandas, scipy, statsmodels; from statsmodels.stats.multitest import multipletests"
+          bowtie --version
+          bowtie-build --version
+          samtools --version
+          trim_galore --version
+          cutadapt --version
+          fastqc --version
+      - name: Check command-line interfaces
+        run: |
+          python core/prepare_amplicon_ref.py --help
+          python core/run_GLORI_amplicon.py --help
+          python run_batch.py --help
+      - name: Run regression and pipeline checks
+        run: RUN_GLORI_INTEGRATION=1 python -m unittest discover -s tests -v
